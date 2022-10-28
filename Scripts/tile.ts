@@ -21,13 +21,60 @@ export const TileData: Tile = {
   TILE_SMASHBOY: ([] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1]),
 };
 
-export function drawTile(game: CanvasRenderingContext2D, tile: number[]) {
+export const tileList = [
+  TileData.TILE_BLUE_RICKY,
+  TileData.TILE_CLEVELAND_Z,
+  TileData.TILE_HERO,
+  TileData.TILE_ORANGE_RICKY,
+  TileData.TILE_RHODE_ISLAND_Z,
+  TileData.TILE_SMASHBOY,
+  TileData.TILE_TEEWEE,
+];
+
+export function drawTile(game: CanvasRenderingContext2D) {
+  let tile = nextTile();
   tile.forEach((element, i) => {
-    if (element == 1) drawBox(i % 4, Math.floor(i / 4), game);
+    if (element == 1) drawBox(i % 4, Math.floor(i / 4), game, tile);
   });
 }
 
-function drawBox(x: number, y: number, game: CanvasRenderingContext2D) {
-  game.fillStyle = "blue";
+export function nextTile() {
+  return tileList[Math.floor(Math.random() * tileList.length)];
+}
+
+function drawBox(
+  x: number,
+  y: number,
+  game: CanvasRenderingContext2D,
+  tile: number[]
+) {
+  let tileColor: string;
+  switch (tile) {
+    case TileData.TILE_BLUE_RICKY:
+      tileColor = "blue";
+      break;
+    case TileData.TILE_CLEVELAND_Z:
+      tileColor = "red";
+      break;
+    case TileData.TILE_HERO:
+      tileColor = "cyan";
+      break;
+    case TileData.TILE_TEEWEE:
+      tileColor = "purple";
+      break;
+    case TileData.TILE_ORANGE_RICKY:
+      tileColor = "orange";
+      break;
+    case TileData.TILE_RHODE_ISLAND_Z:
+      tileColor = "green";
+      break;
+    case TileData.TILE_SMASHBOY:
+      tileColor = "yellow";
+      break;
+    default:
+      tileColor = "black";
+      break;
+  }
+  game.fillStyle = tileColor;
   game.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
 }

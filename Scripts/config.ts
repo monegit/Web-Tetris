@@ -5,6 +5,7 @@ interface BoardSize {
 
 export const tileSize: number = 20;
 export const boardSize: BoardSize = {
-  width: 100,
-  height: 300,
+  width: 15,
+  height: 25,
 };
+export const mapBackgroundColor: string = "gray";
