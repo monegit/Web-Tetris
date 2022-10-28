@@ -10,23 +10,33 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./Scripts/Board.js":
-/*!**************************!*\
-  !*** ./Scripts/Board.js ***!
-  \**************************/
+/***/ "./Scripts/config.ts":
+/*!***************************!*\
+  !*** ./Scripts/config.ts ***!
+  \***************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _Tile_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Tile.js */ \"./Scripts/Tile.js\");\n\n\n/** @type {HTMLCanvasElement} */\nconst canvas = document.getElementById(\"game-tetris\");\nconst game = canvas.getContext(\"2d\");\ngame.fillStyle = \"red\";\ngame.fillRect(0, 0, canvas.width, canvas.height);\n(0,_Tile_js__WEBPACK_IMPORTED_MODULE_0__.drawBox)(game);\n\n// function drawGame() {}\n\n//# sourceURL=webpack://tetris/./Scripts/Board.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"boardSize\": () => (/* binding */ boardSize),\n/* harmony export */   \"tileSize\": () => (/* binding */ tileSize)\n/* harmony export */ });\nconst tileSize = 20;\nconst boardSize = {\n  width: 100,\n  height: 300\n};\n\n//# sourceURL=webpack://tetris/./Scripts/config.ts?");
 
 /***/ }),
 
-/***/ "./Scripts/Tile.js":
+/***/ "./Scripts/main.ts":
 /*!*************************!*\
-  !*** ./Scripts/Tile.js ***!
+  !*** ./Scripts/main.ts ***!
   \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"drawBox\": () => (/* binding */ drawBox)\n/* harmony export */ });\n// source: https://www.joe.co.uk/gaming/tetris-block-names-221127\n\n// prettier-ignore\nconst TILE_ORANGE_RICKY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0];\n// prettier-ignore\nconst TILE_BLUE_RICKY = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0];\n// prettier-ignore\nconst TILE_CLEVELAND_Z = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1];\n// prettier-ignore\nconst TILE_RHODE_ISLAND_Z = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0];\n// prettier-ignore\nconst TILE_HERO = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1];\n// prettier-ignore\nconst TILE_TEEWEE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1];\n// prettier-ignore\nconst TILE_SMASHBOY = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1];\n\n/**\n * 타일의 모양을 데이터화 한 enum 형식의 변수\n * @readonly\n * @enum {number}\n */\nconst TileData = {\n  TILE_BLUE_RICKY,\n  TILE_CLEVELAND_Z,\n  TILE_HERO,\n  TILE_ORANGE_RICKY,\n  TILE_RHODE_ISLAND_Z,\n  TILE_SMASHBOY,\n  TILE_TEEWEE\n};\n\n/**\n * @param {TileData[]} tile 타일 모양\n * @param {CanvasRenderingContext2D} game 게임 캔버스\n * use: /Tile/Tile.TILE_BLUE_RICKY\n */\nfunction drawTile(game, tile) {\n  drawBox(game);\n}\n\n/**\n * @param {CanvasRenderingContext2D} game 상자를 그릴 캔버스\n */\nfunction drawBox(game) {\n  game.fillStyle = \"blue\";\n  game.fillRect(0, 0, 10, 10);\n}\n\n//# sourceURL=webpack://tetris/./Scripts/Tile.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ \"./Scripts/config.ts\");\n/* harmony import */ var _tile__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tile */ \"./Scripts/tile.ts\");\n\n\nconst canvas = document.getElementById(\"game-tetris\");\nconst game = canvas.getContext(\"2d\");\ncanvas.width = _config__WEBPACK_IMPORTED_MODULE_0__.boardSize.width;\ncanvas.height = _config__WEBPACK_IMPORTED_MODULE_0__.boardSize.height;\ngame.fillStyle = \"red\";\ngame.fillRect(0, 0, canvas.width, canvas.height);\n(0,_tile__WEBPACK_IMPORTED_MODULE_1__.drawTile)(game, _tile__WEBPACK_IMPORTED_MODULE_1__.TileData.TILE_CLEVELAND_Z);\n\n// function drawGame() {}\n\n//# sourceURL=webpack://tetris/./Scripts/main.ts?");
+
+/***/ }),
+
+/***/ "./Scripts/tile.ts":
+/*!*************************!*\
+  !*** ./Scripts/tile.ts ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"TileData\": () => (/* binding */ TileData),\n/* harmony export */   \"drawTile\": () => (/* binding */ drawTile)\n/* harmony export */ });\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ \"./Scripts/config.ts\");\n\n\n// source: https://www.joe.co.uk/gaming/tetris-block-names-221127\n\nconst TileData = {\n  TILE_ORANGE_RICKY: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0],\n  TILE_BLUE_RICKY: [] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0],\n  TILE_CLEVELAND_Z: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1],\n  TILE_RHODE_ISLAND_Z: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0],\n  TILE_HERO: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],\n  TILE_TEEWEE: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],\n  TILE_SMASHBOY: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1]\n};\nfunction drawTile(game, tile) {\n  tile.forEach((element, i) => {\n    if (element == 1) drawBox(i % 4, Math.floor(i / 4), game);\n  });\n}\nfunction drawBox(x, y, game) {\n  game.fillStyle = \"blue\";\n  game.fillRect(x * _config__WEBPACK_IMPORTED_MODULE_0__.tileSize, y * _config__WEBPACK_IMPORTED_MODULE_0__.tileSize, _config__WEBPACK_IMPORTED_MODULE_0__.tileSize, _config__WEBPACK_IMPORTED_MODULE_0__.tileSize);\n}\n\n//# sourceURL=webpack://tetris/./Scripts/tile.ts?");
 
 /***/ })
 
@@ -90,7 +100,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./Scripts/Board.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./Scripts/main.ts");
 /******/ 	
 /******/ })()
 ;
