@@ -1,46 +1,88 @@
-import { board, initBoard } from "./board";
-import * as config from "./config";
-import { movement } from "./movement";
-import * as tile from "./tile";
+import { Board } from "./board";
+import { BLOCK_SIZE, COLS, KEY, ROWS } from "./constants";
+import { Piece, PieceData } from "./piece";
 
 const canvas = <HTMLCanvasElement>document.getElementById("game-tetris");
-const game = <CanvasRenderingContext2D>canvas.getContext("2d");
+const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
 
-function initGame() {
-  canvas.width = config.boardSize.width * config.tileSize;
-  canvas.height = config.boardSize.height * config.tileSize;
-  movement();
+const canvasNext = <HTMLCanvasElement>(
+  document.getElementById("game-tetris-next")
+);
+const ctxNext = <CanvasRenderingContext2D>canvasNext.getContext("2d");
+// 상수를 사용해 캔버스의 크기를 계산한다.
+ctx.canvas.width = COLS * BLOCK_SIZE;
+ctx.canvas.height = ROWS * BLOCK_SIZE;
+
+// 블록의 크기를 변경한다.
+ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+
+const moves = {
+  [KEY.LEFT]: (p: PieceData) => ({ ...p, x: p.x - 1 }),
+  [KEY.RIGHT]: (p: PieceData) => ({ ...p, x: p.x + 1 }),
+  [KEY.DOWN]: (p: PieceData) => ({ ...p, y: p.y + 1 }),
+  [KEY.UP]: (p: PieceData) => ({ ...p, y: p.x + 1 }),
+  [KEY.SPACE]: (p: PieceData) => board.rotate(p),
+};
+
+let time = { start: 0, elapsed: 0, level: 1000 };
+let requestId: number | null = null;
+
+document.addEventListener("keydown", (event) => {
+  if (moves[event.keyCode]) {
+    // 이벤트 버블링을 막는다.
+    event.preventDefault();
+
+    // 조각의 새 상태를 얻는다.
+    let p = moves[event.keyCode](board.piece);
+
+    if (event.keyCode === KEY.UP) {
+      while (board.valid(p)) {
+        board.piece.move(p);
+        p = moves[KEY.DOWN](board.piece);
+      }
+
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+      board.piece.draw();
+    }
+
+    if (board.valid(p)) {
+      // 이동이 가능한 상태라면 조각을 이동한다.
+      board.piece.move(p);
+
+      // 그리기 전에 이전 좌표를 지운다.
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+      board.piece.draw();
+    }
+  }
+});
+
+let board = new Board(ctx, ctxNext);
+
+function animate(now = 0) {
+  // 지난 시간을 업데이트한다.
+  time.elapsed = now - time.start;
+
+  // 지난 시간이 현재 레벨의 시간을 초과했는지 확인한다.
+  if (time.elapsed > time.level) {
+    // 현재 시간을 다시 측정한다.
+    time.start = now;
+
+    board.drop();
+  }
+
+  // 새로운 상태로 그리기 전에 보드를 지운다.
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  board.draw();
+  requestId = requestAnimationFrame(animate);
 }
 
-function drawGame() {
-  window.setInterval(function () {
-    game.clearRect(0, 0, canvas.width, canvas.height);
+function play() {
+  board.reset();
 
-    board.forEach((y_array, y) => {
-      y_array.forEach((state, x) => {
-        switch (state) {
-          case 0:
-            game.fillStyle = config.mapBackgroundColor;
-            game.fillRect(
-              x * config.tileSize,
-              y * config.tileSize,
-              config.tileSize,
-              config.tileSize
-            );
-            break;
-          case 1:
-            break;
-        }
-      });
-    });
-    tile.drawTile(game);
-  }, config.tileSpeed * 10);
+  animate();
 }
 
-initBoard(config.boardSize.width, config.boardSize.height);
-initGame();
-drawGame();
-
-window.setInterval(() => {
-  console.log(board);
-}, 1000);
+play();

@@ -15,48 +15,41 @@ interface Tile {
 }
 
 export const tileData: Tile = {
-  TILE_ORANGE_RICKY: ([] = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [1, 1, 1, 0],
-  ]),
-  TILE_BLUE_RICKY: ([] = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [1, 0, 0, 0],
-    [1, 1, 1, 0],
-  ]),
-  TILE_CLEVELAND_Z: ([] = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 1, 1, 0],
-    [0, 0, 1, 1],
-  ]),
-  TILE_RHODE_ISLAND_Z: ([] = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 1, 1],
-    [0, 1, 1, 0],
-  ]),
-  TILE_HERO: ([] = [
+  TILE_ORANGE_RICKY: [
+    [0, 0, 0],
+    [0, 0, 1],
+    [1, 1, 1],
+  ],
+  TILE_BLUE_RICKY: [
+    [0, 0, 0],
+    [2, 0, 0],
+    [2, 2, 2],
+  ],
+  TILE_CLEVELAND_Z: [
+    [0, 0, 0],
+    [3, 3, 0],
+    [0, 3, 3],
+  ],
+  TILE_RHODE_ISLAND_Z: [
+    [0, 0, 0],
+    [0, 4, 4],
+    [4, 4, 0],
+  ],
+  TILE_HERO: [
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-    [1, 1, 1, 1],
-  ]),
-  TILE_TEEWEE: ([] = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [0, 1, 1, 1],
-  ]),
-  TILE_SMASHBOY: ([] = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 1, 1],
-    [0, 0, 1, 1],
-  ]),
+    [5, 5, 5, 5],
+  ],
+  TILE_TEEWEE: [
+    [0, 0, 0],
+    [0, 6, 0],
+    [6, 6, 6],
+  ],
+  TILE_SMASHBOY: [
+    [7, 7],
+    [7, 7],
+  ],
 };
 
 export const tileList = [
@@ -72,19 +65,16 @@ export const tileList = [
 export let currentTile: number[][];
 
 export function drawTile(game: CanvasRenderingContext2D) {
-  currentTile = getNextTile();
-
   // 배열대로 타일을 그려줌
   currentTile.forEach((y_array, y) => {
     y_array.forEach((e, x) => {
-      if (e == 1) drawBox(x, y, game, currentTile);
+      if (e > 0) drawBox(x, y, game, currentTile);
     });
   });
 }
 
-export function getNextTile() {
-  // return tileList[Math.floor(Math.random() * tileList.length)];
-  return tileList[0];
+export function setNextTile() {
+  currentTile = tileList[Math.floor(Math.random() * tileList.length)];
 }
 
 function drawBox(

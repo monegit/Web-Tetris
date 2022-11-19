@@ -10,33 +10,43 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./Scripts/config.ts":
-/*!***************************!*\
-  !*** ./Scripts/config.ts ***!
-  \***************************/
+/***/ "./Scripts/board.ts":
+/*!**************************!*\
+  !*** ./Scripts/board.ts ***!
+  \**************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"boardSize\": () => (/* binding */ boardSize),\n/* harmony export */   \"tileSize\": () => (/* binding */ tileSize)\n/* harmony export */ });\nconst tileSize = 20;\nconst boardSize = {\n  width: 100,\n  height: 300\n};\n\n//# sourceURL=webpack://tetris/./Scripts/config.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Board\": () => (/* binding */ Board)\n/* harmony export */ });\n/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ \"./Scripts/constants.ts\");\n/* harmony import */ var _piece__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./piece */ \"./Scripts/piece.ts\");\n\n\nclass Board {\n  constructor(ctx, ctxNext) {\n    this.ctx = ctx;\n    this.ctxNext = ctxNext;\n  }\n\n  // 새 게임이 시작되면 보드를 초기화한다.\n  reset() {\n    this.grid = this.getEmptyBoard();\n    this.piece = new _piece__WEBPACK_IMPORTED_MODULE_1__.Piece(this.ctx);\n    this.piece.setStartingPosition();\n    this.getNewPiece();\n  }\n  draw() {\n    this.piece.draw();\n    this.drawBoard();\n  }\n  drop() {\n    let p = {\n      ...this.piece,\n      y: this.piece.y + 1\n    };\n    if (this.valid(p)) {\n      this.piece.move(p);\n    } else {\n      this.freeze();\n      // this.clearLines();\n      if (this.piece.y === 0) {\n        // Game over\n        return false;\n      }\n      this.piece = this.next;\n      this.piece.ctx = this.ctx;\n      this.piece.setStartingPosition();\n      this.getNewPiece();\n    }\n    return true;\n  }\n  drawBoard() {\n    this.grid.forEach((row, y) => {\n      row.forEach((value, x) => {\n        if (value > 0) {\n          this.ctx.fillStyle = _constants__WEBPACK_IMPORTED_MODULE_0__.COLORS[this.piece.typeId];\n          this.ctx.fillRect(x, y, 1, 1);\n        }\n      });\n    });\n  }\n  getNewPiece() {\n    const {\n      width,\n      height\n    } = this.ctxNext.canvas;\n    this.next = new _piece__WEBPACK_IMPORTED_MODULE_1__.Piece(this.ctxNext);\n    this.ctxNext.clearRect(0, 0, width, height);\n    this.next.draw();\n  }\n\n  // 0으로 채워진 행렬을 얻는다.\n  getEmptyBoard() {\n    return Array.from({\n      length: _constants__WEBPACK_IMPORTED_MODULE_0__.ROWS\n    }, () => Array(_constants__WEBPACK_IMPORTED_MODULE_0__.COLS).fill(0));\n  }\n  valid(p) {\n    // this.freeze();\n    return p.shape.every((row, dy) => {\n      return row.every((value, dx) => {\n        let x = p.x + dx;\n        let y = p.y + dy;\n        return value === 0 || this.isInsideWalls(x, y) && this.notOccupied(x, y);\n      });\n    });\n  }\n  rotate(p) {\n    // 알고리즘 처리\n    for (let y = 0; y < p.shape.length; ++y) {\n      for (let x = 0; x < y; ++x) {\n        [p.shape[x][y], p.shape[y][x]] = [p.shape[y][x], p.shape[x][y]];\n      }\n    }\n\n    // 열 순서대로 뒤집는다.\n    p.shape.forEach(row => row.reverse());\n    return p;\n  }\n  isInsideWalls(x, y) {\n    return x >= 0 && x < _constants__WEBPACK_IMPORTED_MODULE_0__.COLS && y <= _constants__WEBPACK_IMPORTED_MODULE_0__.ROWS;\n  }\n  notOccupied(x, y) {\n    return this.grid[y] && this.grid[y][x] === 0;\n  }\n  freeze() {\n    this.piece.shape.forEach((row, y) => {\n      row.forEach((value, x) => {\n        if (value > 0) {\n          this.grid[y + this.piece.y][x + this.piece.x] = value;\n          console.log(this.grid);\n        }\n      });\n    });\n  }\n}\n\n//# sourceURL=webpack://tetris/./Scripts/board.ts?");
 
 /***/ }),
 
-/***/ "./Scripts/main.ts":
-/*!*************************!*\
-  !*** ./Scripts/main.ts ***!
-  \*************************/
+/***/ "./Scripts/constants.ts":
+/*!******************************!*\
+  !*** ./Scripts/constants.ts ***!
+  \******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ \"./Scripts/config.ts\");\n/* harmony import */ var _tile__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tile */ \"./Scripts/tile.ts\");\n\n\nconst canvas = document.getElementById(\"game-tetris\");\nconst game = canvas.getContext(\"2d\");\ncanvas.width = _config__WEBPACK_IMPORTED_MODULE_0__.boardSize.width;\ncanvas.height = _config__WEBPACK_IMPORTED_MODULE_0__.boardSize.height;\ngame.fillStyle = \"red\";\ngame.fillRect(0, 0, canvas.width, canvas.height);\n(0,_tile__WEBPACK_IMPORTED_MODULE_1__.drawTile)(game, _tile__WEBPACK_IMPORTED_MODULE_1__.TileData.TILE_CLEVELAND_Z);\n\n// function drawGame() {}\n\n//# sourceURL=webpack://tetris/./Scripts/main.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"BLOCK_SIZE\": () => (/* binding */ BLOCK_SIZE),\n/* harmony export */   \"COLORS\": () => (/* binding */ COLORS),\n/* harmony export */   \"COLS\": () => (/* binding */ COLS),\n/* harmony export */   \"KEY\": () => (/* binding */ KEY),\n/* harmony export */   \"ROWS\": () => (/* binding */ ROWS),\n/* harmony export */   \"SHAPES\": () => (/* binding */ SHAPES)\n/* harmony export */ });\nconst COLS = 10;\nconst ROWS = 20;\nconst BLOCK_SIZE = 30;\nconst KEY = {\n  LEFT: 37,\n  RIGHT: 39,\n  DOWN: 40,\n  UP: 38,\n  SPACE: 32\n};\nObject.freeze(KEY);\nconst COLORS = [\"cyan\", \"blue\", \"orange\", \"yellow\", \"green\", \"purple\", \"red\"];\nconst SHAPES = [[[0, 0, 1], [1, 1, 1], [0, 0, 0]], [[2, 2, 0], [0, 2, 2], [0, 0, 0]], [[0, 3, 3], [3, 3, 0], [0, 0, 0]], [[0, 4, 0], [4, 4, 4], [0, 0, 0]], [[5, 5], [5, 5]], [[6, 6, 6, 6], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], [[7, 0, 0], [7, 7, 7], [0, 0, 0]]];\n\n//# sourceURL=webpack://tetris/./Scripts/constants.ts?");
 
 /***/ }),
 
-/***/ "./Scripts/tile.ts":
+/***/ "./Scripts/game.ts":
 /*!*************************!*\
-  !*** ./Scripts/tile.ts ***!
+  !*** ./Scripts/game.ts ***!
   \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"TileData\": () => (/* binding */ TileData),\n/* harmony export */   \"drawTile\": () => (/* binding */ drawTile)\n/* harmony export */ });\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./config */ \"./Scripts/config.ts\");\n\n\n// source: https://www.joe.co.uk/gaming/tetris-block-names-221127\n\nconst TileData = {\n  TILE_ORANGE_RICKY: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0],\n  TILE_BLUE_RICKY: [] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0],\n  TILE_CLEVELAND_Z: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1],\n  TILE_RHODE_ISLAND_Z: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0],\n  TILE_HERO: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],\n  TILE_TEEWEE: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1],\n  TILE_SMASHBOY: [] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1]\n};\nfunction drawTile(game, tile) {\n  tile.forEach((element, i) => {\n    if (element == 1) drawBox(i % 4, Math.floor(i / 4), game);\n  });\n}\nfunction drawBox(x, y, game) {\n  game.fillStyle = \"blue\";\n  game.fillRect(x * _config__WEBPACK_IMPORTED_MODULE_0__.tileSize, y * _config__WEBPACK_IMPORTED_MODULE_0__.tileSize, _config__WEBPACK_IMPORTED_MODULE_0__.tileSize, _config__WEBPACK_IMPORTED_MODULE_0__.tileSize);\n}\n\n//# sourceURL=webpack://tetris/./Scripts/tile.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _board__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./board */ \"./Scripts/board.ts\");\n/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ \"./Scripts/constants.ts\");\n\n\nconst canvas = document.getElementById(\"game-tetris\");\nconst ctx = canvas.getContext(\"2d\");\nconst canvasNext = document.getElementById(\"game-tetris-next\");\nconst ctxNext = canvasNext.getContext(\"2d\");\n// 상수를 사용해 캔버스의 크기를 계산한다.\nctx.canvas.width = _constants__WEBPACK_IMPORTED_MODULE_1__.COLS * _constants__WEBPACK_IMPORTED_MODULE_1__.BLOCK_SIZE;\nctx.canvas.height = _constants__WEBPACK_IMPORTED_MODULE_1__.ROWS * _constants__WEBPACK_IMPORTED_MODULE_1__.BLOCK_SIZE;\n\n// 블록의 크기를 변경한다.\nctx.scale(_constants__WEBPACK_IMPORTED_MODULE_1__.BLOCK_SIZE, _constants__WEBPACK_IMPORTED_MODULE_1__.BLOCK_SIZE);\nconst moves = {\n  [_constants__WEBPACK_IMPORTED_MODULE_1__.KEY.LEFT]: p => ({\n    ...p,\n    x: p.x - 1\n  }),\n  [_constants__WEBPACK_IMPORTED_MODULE_1__.KEY.RIGHT]: p => ({\n    ...p,\n    x: p.x + 1\n  }),\n  [_constants__WEBPACK_IMPORTED_MODULE_1__.KEY.DOWN]: p => ({\n    ...p,\n    y: p.y + 1\n  }),\n  [_constants__WEBPACK_IMPORTED_MODULE_1__.KEY.UP]: p => ({\n    ...p,\n    y: p.x + 1\n  }),\n  [_constants__WEBPACK_IMPORTED_MODULE_1__.KEY.SPACE]: p => board.rotate(p)\n};\nlet time = {\n  start: 0,\n  elapsed: 0,\n  level: 1000\n};\nlet requestId = null;\ndocument.addEventListener(\"keydown\", event => {\n  if (moves[event.keyCode]) {\n    // 이벤트 버블링을 막는다.\n    event.preventDefault();\n\n    // 조각의 새 상태를 얻는다.\n    let p = moves[event.keyCode](board.piece);\n    if (event.keyCode === _constants__WEBPACK_IMPORTED_MODULE_1__.KEY.UP) {\n      while (board.valid(p)) {\n        board.piece.move(p);\n        p = moves[_constants__WEBPACK_IMPORTED_MODULE_1__.KEY.DOWN](board.piece);\n      }\n      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n      board.piece.draw();\n    }\n    if (board.valid(p)) {\n      // 이동이 가능한 상태라면 조각을 이동한다.\n      board.piece.move(p);\n\n      // 그리기 전에 이전 좌표를 지운다.\n      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n      board.piece.draw();\n    }\n  }\n});\nlet board = new _board__WEBPACK_IMPORTED_MODULE_0__.Board(ctx, ctxNext);\nfunction animate(now = 0) {\n  // 지난 시간을 업데이트한다.\n  time.elapsed = now - time.start;\n\n  // 지난 시간이 현재 레벨의 시간을 초과했는지 확인한다.\n  if (time.elapsed > time.level) {\n    // 현재 시간을 다시 측정한다.\n    time.start = now;\n    board.drop();\n  }\n\n  // 새로운 상태로 그리기 전에 보드를 지운다.\n  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);\n  board.draw();\n  requestId = requestAnimationFrame(animate);\n}\nfunction play() {\n  board.reset();\n  animate();\n}\nplay();\n\n//# sourceURL=webpack://tetris/./Scripts/game.ts?");
+
+/***/ }),
+
+/***/ "./Scripts/piece.ts":
+/*!**************************!*\
+  !*** ./Scripts/piece.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"Piece\": () => (/* binding */ Piece)\n/* harmony export */ });\n/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./constants */ \"./Scripts/constants.ts\");\n\nclass Piece {\n  constructor(ctx) {\n    this.ctx = ctx;\n    this.spawn();\n  }\n  randomizeTetrominoType(noOfTypes) {\n    return Math.floor(Math.random() * noOfTypes);\n  }\n  spawn() {\n    const typeId = this.randomizeTetrominoType(_constants__WEBPACK_IMPORTED_MODULE_0__.COLORS.length);\n    this.shape = _constants__WEBPACK_IMPORTED_MODULE_0__.SHAPES[typeId];\n    this.color = _constants__WEBPACK_IMPORTED_MODULE_0__.COLORS[typeId];\n\n    // Starting position.\n    this.x = 3;\n    this.y = 0;\n    this.hardDropped = false;\n  }\n  setStartingPosition() {\n    this.x = this.typeId === 4 ? 4 : 3;\n  }\n  draw() {\n    this.ctx.fillStyle = this.color;\n    this.shape.forEach((row, y) => {\n      row.forEach((value, x) => {\n        // this.x, this.y는 shape의 상단 왼쪽 좌표이다\n        // shape 안에 있는 블록 좌표에 x, y를 더한다.\n        // 보드에서 블록의 좌표는 this.x + x가 된다.\n        if (value > 0) {\n          this.ctx.fillRect(this.x + x, this.y + y, 1, 1);\n        }\n      });\n    });\n  }\n  move(p) {\n    if (!this.hardDropped) {\n      this.x = p.x;\n      this.y = p.y;\n    }\n    this.shape = p.shape;\n  }\n}\n\n//# sourceURL=webpack://tetris/./Scripts/piece.ts?");
 
 /***/ })
 
@@ -100,7 +110,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./Scripts/main.ts");
+/******/ 	var __webpack_exports__ = __webpack_require__("./Scripts/game.ts");
 /******/ 	
 /******/ })()
 ;
