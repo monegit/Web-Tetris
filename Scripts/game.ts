@@ -1,6 +1,6 @@
 import { Board } from "./board";
 import { BLOCK_SIZE, COLS, KEY, ROWS } from "./constants";
-import { Piece, PieceData } from "./piece";
+import { PieceData } from "./piece";
 
 const canvas = <HTMLCanvasElement>document.getElementById("game-tetris");
 const ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
@@ -9,12 +9,18 @@ const canvasNext = <HTMLCanvasElement>(
   document.getElementById("game-tetris-next")
 );
 const ctxNext = <CanvasRenderingContext2D>canvasNext.getContext("2d");
+const scoreElement = <HTMLLabelElement>document.getElementById("game-score");
+
 // 상수를 사용해 캔버스의 크기를 계산한다.
 ctx.canvas.width = COLS * BLOCK_SIZE;
 ctx.canvas.height = ROWS * BLOCK_SIZE;
 
+ctxNext.canvas.width = BLOCK_SIZE * 4;
+ctxNext.canvas.height = BLOCK_SIZE * 4;
+
 // 블록의 크기를 변경한다.
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
 
 const moves = {
   [KEY.LEFT]: (p: PieceData) => ({ ...p, x: p.x - 1 }),
@@ -60,6 +66,21 @@ document.addEventListener("keydown", (event) => {
 
 let board = new Board(ctx, ctxNext);
 
+export function updateScore(score: number) {
+  scoreElement.textContent = (
+    Number(scoreElement.textContent) + score
+  ).toString();
+}
+
+function gameOver() {
+  cancelAnimationFrame(requestId!);
+  ctx.fillStyle = "black";
+  ctx.fillRect(1, 3, 8, 1.2);
+  ctx.font = "1px Arial";
+  ctx.fillStyle = "red";
+  ctx.fillText("GAME OVER", 1.8, 4);
+}
+
 function animate(now = 0) {
   // 지난 시간을 업데이트한다.
   time.elapsed = now - time.start;
@@ -81,7 +102,7 @@ function animate(now = 0) {
 
 function play() {
   board.reset();
-
+  scoreElement.textContent = "0";
   animate();
 }
 

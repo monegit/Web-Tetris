@@ -6,6 +6,7 @@ export interface PieceData {
   color: string;
   shape: number[][];
   ctx: CanvasRenderingContext2D;
+  ctxNext: CanvasRenderingContext2D;
   typeId: number;
   hardDropped: boolean;
 }
@@ -16,12 +17,29 @@ export class Piece implements PieceData {
   color!: string;
   shape!: number[][];
   ctx!: CanvasRenderingContext2D;
+  ctxNext!: CanvasRenderingContext2D;
   typeId!: number;
   hardDropped!: boolean;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
     this.spawn();
+  }
+
+  drawNext(ctx: CanvasRenderingContext2D) {
+    this.ctx.fillStyle = this.color;
+    this.shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        // this.x, this.y는 shape의 상단 왼쪽 좌표이다
+        // shape 안에 있는 블록 좌표에 x, y를 더한다.
+        // 보드에서 블록의 좌표는 this.x + x가 된다.
+        if (value > 0) {
+          this.ctx.fillRect(this.x + x, this.y + y, 1, 1);
+        }
+      });
+    });
+
+    return ctx;
   }
 
   randomizeTetrominoType(noOfTypes: number) {
@@ -34,7 +52,7 @@ export class Piece implements PieceData {
     this.color = COLORS[typeId];
 
     // Starting position.
-    this.x = 3;
+    this.x = 0;
     this.y = 0;
 
     this.hardDropped = false;
