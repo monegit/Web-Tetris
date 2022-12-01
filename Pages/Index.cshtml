@@ -1,13 +1,57 @@
 ﻿@page
+@using Tetris.Data
 @model IndexModel
 @{
     ViewData["Title"] = "Home";
 }
 
-<head>
-</head>
-
 <body>
-    <div class="text-center">
+    <div id="end">
+        GameOver
+        <form method="post">
+            이름
+            <input type="text" name="name">
+            점수
+            <input id="score" type="text" name="score" value="100">
+            <input type="submit">
+        </form>
+    </div>
+    <div class="flex justify-center gap-3">
+        <div class="flex flex-col gap-3">
+            <div>
+                Ranking
+            </div>
+
+            <ol>
+                @for (int i = 0; i < @SQL.Instance.arr_name.Count; i++)
+                {
+                    <li>
+                        <div>
+                            <div class="flex">
+                                <div class="flex">
+                                    @(i+1).
+                                    <div id="name@(i)">
+                                        @SQL.Instance.arr_name[i]
+                                    </div>
+                                </div>
+                                <div id='score@(i)' class="text-xs justify-center">
+                                    (@SQL.Instance.arr_score[i]p)
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ol>
+        </div>
+        <div>
+            <canvas class="border-2" id="game-tetris"></canvas>
+        </div>
+        <div>
+            <div>
+                score :
+                <label class="" id="game-score"></label>
+            </div>
+            <canvas id="game-tetris-next"> </canvas>
+        </div>
     </div>
 </body>

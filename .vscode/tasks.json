@@ -29,7 +29,20 @@
       "label": "watch",
       "command": "dotnet",
       "type": "process",
-      "args": ["watch", "run", "--project", "${workspaceFolder}/Tetris.csproj"],
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/Tetris.csproj",
+        "&&",
+        "npm",
+        "run",
+        "style",
+        "&&",
+        "npm",
+        "run",
+        "build"
+      ],
       "problemMatcher": "$msCompile"
     }
   ]

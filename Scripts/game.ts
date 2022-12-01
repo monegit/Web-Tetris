@@ -74,11 +74,15 @@ export function updateScore(score: number) {
 
 function gameOver() {
   cancelAnimationFrame(requestId!);
-  ctx.fillStyle = "black";
-  ctx.fillRect(1, 3, 8, 1.2);
-  ctx.font = "1px Arial";
-  ctx.fillStyle = "red";
-  ctx.fillText("GAME OVER", 1.8, 4);
+  var end = document.getElementById("end");
+  end?.setAttribute("style", "visibility: visible;");
+  var a = <HTMLInputElement>document.getElementById("score");
+  a.value = scoreElement.textContent?.toString() || "";
+  // ctx.fillStyle = "black";
+  // ctx.fillRect(1, 3, 8, 1.2);
+  // ctx.font = "1px Arial";
+  // ctx.fillStyle = "red";
+  // ctx.fillText("GAME OVER", 1.8, 4);
 }
 
 function animate(now = 0) {
@@ -90,10 +94,12 @@ function animate(now = 0) {
     // 현재 시간을 다시 측정한다.
     time.start = now;
 
-    board.drop();
+    if (!board.drop()) {
+      gameOver();
+      return;
+    }
   }
 
-  // 새로운 상태로 그리기 전에 보드를 지운다.
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   board.draw();

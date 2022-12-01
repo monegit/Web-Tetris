@@ -5,7 +5,26 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
+    <UpToDateCheckBuilt Include="postcss.config.js" Set="Css" />
+    <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+    <Watch Include="**\*.cs;**\*.js;**\*.json;**\*.html;**.*.md" Exclude="node_modules\**\*;wwwroot\**\*;" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
+  </ItemGroup>
+
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
     <Exec Command="npm run build" />
+  </Target>
+
+  <Target Name="Tailwind" BeforeTargets="BeforeBuild">
+    <Exec Command="npm run style" />
   </Target>
 </Project>
